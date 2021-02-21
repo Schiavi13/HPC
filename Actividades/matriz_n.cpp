@@ -10,7 +10,7 @@ void poblar_matriz(int*);
 
 int main(){
     int n = capturar_tamano();
-    printf("tamano: %d", n);
+    int *matriz = crear_matriz(n);
 }
 
 
