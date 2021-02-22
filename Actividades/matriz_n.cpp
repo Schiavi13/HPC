@@ -12,11 +12,16 @@ void mostrar_matriz(int**, int);
 int main(){
     srand(time(NULL));
     int n = capturar_tamano();
-    int **matriz = NULL;
-    matriz = crear_matriz(matriz, n);
-    poblar_matriz(matriz,n);
-    mostrar_matriz(matriz,n);
-    free(matriz);
+    int **matriz1 = NULL;
+    int **matriz2 = NULL;
+    matriz1 = crear_matriz(matriz1, n);
+    matriz2 = crear_matriz(matriz2, n);
+    poblar_matriz(matriz1, n);
+    poblar_matriz(matriz2, n);
+    mostrar_matriz(matriz1, n);
+    mostrar_matriz(matriz2, n);
+    free(matriz1);
+    free(matriz2);
     return 0;
 }
 
@@ -70,4 +75,5 @@ void mostrar_matriz(int ** matriz, int n){
         }
         printf("\n");
     }
+    printf("\n");
 }
