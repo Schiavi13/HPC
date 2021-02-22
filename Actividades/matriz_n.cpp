@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
 #include <time.h>
 
 //Funciones prototipo
 int capturar_tamano(void);
 int ** crear_matriz(int**, int);
 void poblar_matriz(int**, int);
-
+void mostrar_matriz(int**, int);
 
 
 int main(){
@@ -16,6 +15,7 @@ int main(){
     int **matriz = NULL;
     matriz = crear_matriz(matriz, n);
     poblar_matriz(matriz,n);
+    mostrar_matriz(matriz,n);
     free(matriz);
     return 0;
 }
@@ -60,5 +60,14 @@ void poblar_matriz(int ** matriz, int n){
         for(int j=0;j<n;j++){
             matriz[i][j] = rand()%100; //entero maximo = 100
         }
+    }
+}
+
+void mostrar_matriz(int ** matriz, int n){
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            printf("m%d%d:%d ",i,j,matriz[i][j]);
+        }
+        printf("\n");
     }
 }
