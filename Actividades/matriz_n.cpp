@@ -7,6 +7,8 @@ int capturar_tamano(void);
 int ** crear_matriz(int**, int);
 void poblar_matriz(int**, int);
 void mostrar_matriz(int**, int);
+int producto_punto(int*,int**,int,int);
+int ** multiplicar_matrices(int**, int**, int**, int);
 
 
 int main(){
@@ -14,14 +16,19 @@ int main(){
     int n = capturar_tamano();
     int **matriz1 = NULL;
     int **matriz2 = NULL;
+    int **matrizResultado = NULL;
     matriz1 = crear_matriz(matriz1, n);
     matriz2 = crear_matriz(matriz2, n);
+    matrizResultado = crear_matriz(matrizResultado, n);
     poblar_matriz(matriz1, n);
     poblar_matriz(matriz2, n);
     mostrar_matriz(matriz1, n);
     mostrar_matriz(matriz2, n);
+    matrizResultado = multiplicar_matrices(matriz1,matriz2,matrizResultado,n);
+    mostrar_matriz(matrizResultado,n);
     free(matriz1);
     free(matriz2);
+    free(matrizResultado);
     return 0;
 }
 
@@ -76,4 +83,38 @@ void mostrar_matriz(int ** matriz, int n){
         printf("\n");
     }
     printf("\n");
+}
+
+//Realiza el producto punto entre filas de la matriz 1 y columnas de la matriz 2
+int producto_punto(int * fila, int ** matriz2, int columna, int n){
+    int productoPunto = 0;
+    for(int i=0;i<n;i++){
+        /*
+            Realiza el producto punto de una fila con una columna
+            Recibe el apuntador a una fila, y la segunda matriz para acceder a la columna
+            Si se recibe la fila 1 y la columna 2:
+            *fila = p1, que a su vez apunta a {m11,m12,m13,...,m1n}
+
+            **matriz2, junto la columna 2, para acceder a la columna:
+            matriz2[i][2] = {b12,b22,b32,...,bn2}
+
+            El resto es la operacion aritmetica de producto punto bien concida
+            producto Punto = m11*b12 + m12*b22 + m13*b32 +...+ m1n*bn2
+        */
+        productoPunto = productoPunto + fila[i]*matriz2[i][columna];
+    }
+    return productoPunto;
+}
+
+//Realiza la multiplicacion de matrices, haciendo uso de la funcion producto_punto()
+int ** multiplicar_matrices(int ** matriz1, int ** matriz2, int ** matrizResultado, int n){
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            /*Asigna a matrizResultado[i][j] 
+            el producto punto entre la fila i de la matriz1 y la columna j de la matriz2
+            */
+            matrizResultado[i][j] = producto_punto(matriz1[i],matriz2,j,n);
+        }
+    }
+    return(matrizResultado);
 }
