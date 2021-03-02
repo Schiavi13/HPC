@@ -35,10 +35,10 @@ int main(){
     matrices->matrizResultado = crear_matriz(matrices->matrizResultado, n);
     poblar_matriz(matrices->matriz1, n);
     poblar_matriz(matrices->matriz2, n);
-    mostrar_matriz(matrices->matriz1, n);
-    mostrar_matriz(matrices->matriz2, n);
+    //mostrar_matriz(matrices->matriz1, n);
+    //mostrar_matriz(matrices->matriz2, n);
     matrices->matrizResultado = multiplicar_matrices(matrices->matriz1,matrices->matriz2,matrices->matrizResultado,n);
-    mostrar_matriz(matrices->matrizResultado,n);
+    //mostrar_matriz(matrices->matrizResultado,n);
     free(matrices->matriz1);
     free(matrices->matriz2);
     free(matrices->matrizResultado);
