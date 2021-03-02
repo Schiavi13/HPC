@@ -12,25 +12,38 @@ void mostrar_matriz(int**, int);
 int producto_punto(int*,int**,int,int);
 int ** multiplicar_matrices(int**, int**, int**, int);
 
+typedef struct{
+    int n = 0;
+    int **matriz1 = NULL, **matriz2 = NULL, **matrizResultado = NULL;
+}estructura_matrices;
+
 
 int main(){
     srand(time(NULL));
     int n = capturar_tamano();
+    estructura_matrices * matrices;
+    matrices = (estructura_matrices*)malloc(sizeof(estructura_matrices));
+    matrices->n = n;
+    /*
     int **matriz1 = NULL;
     int **matriz2 = NULL;
     int **matrizResultado = NULL;
-    matriz1 = crear_matriz(matriz1, n);
-    matriz2 = crear_matriz(matriz2, n);
-    matrizResultado = crear_matriz(matrizResultado, n);
-    poblar_matriz(matriz1, n);
-    poblar_matriz(matriz2, n);
-    //mostrar_matriz(matriz1, n);
-    //mostrar_matriz(matriz2, n);
-    matrizResultado = multiplicar_matrices(matriz1,matriz2,matrizResultado,n);
-    //mostrar_matriz(matrizResultado,n);
-    free(matriz1);
-    free(matriz2);
-    free(matrizResultado);
+    */
+    //pthread_t *hilos = (pthread_t*) malloc(n*n*sizeof(pthread_t));
+    matrices->matriz1 = crear_matriz(matrices->matriz1, n);
+    matrices->matriz2 = crear_matriz(matrices->matriz2, n);
+    matrices->matrizResultado = crear_matriz(matrices->matrizResultado, n);
+    poblar_matriz(matrices->matriz1, n);
+    poblar_matriz(matrices->matriz2, n);
+    mostrar_matriz(matrices->matriz1, n);
+    mostrar_matriz(matrices->matriz2, n);
+    matrices->matrizResultado = multiplicar_matrices(matrices->matriz1,matrices->matriz2,matrices->matrizResultado,n);
+    mostrar_matriz(matrices->matrizResultado,n);
+    free(matrices->matriz1);
+    free(matrices->matriz2);
+    free(matrices->matrizResultado);
+    free(matrices);
+    //free(hilos);
     return 0;
 }
 
