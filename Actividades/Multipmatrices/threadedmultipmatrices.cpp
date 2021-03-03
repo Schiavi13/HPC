@@ -4,47 +4,59 @@
 #include <error.h>
 #include <pthread.h>
 
+/*estructura para almacenar los datos que serán utilizados en la multiplicación de matrices, aquí se
+empaquetan los parámetros que necesitamos en la operación
+*/
+typedef struct{
+    int n = 0;
+    int fila = 0;
+    int columna = 0;
+    int **matriz1 = NULL, **matriz2 = NULL, **matrizResultado = NULL;
+}estructura_matrices;
+
+
 //Funciones prototipo
 int capturar_tamano(void);
 int ** crear_matriz(int**, int);
 void poblar_matriz(int**, int);
 void mostrar_matriz(int**, int);
-int producto_punto(int*,int**,int,int);
-int ** multiplicar_matrices(int**, int**, int**, int);
-
-typedef struct{
-    int n = 0;
-    int **matriz1 = NULL, **matriz2 = NULL, **matrizResultado = NULL;
-}estructura_matrices;
+void *producto_punto(void * estructura_matrices);
+void multiplicar_matrices(estructura_matrices*,pthread_t*,int**,int**,int**,int);
 
 
 int main(){
     srand(time(NULL));
     int n = capturar_tamano();
-    estructura_matrices * matrices;
-    matrices = (estructura_matrices*)malloc(sizeof(estructura_matrices));
-    matrices->n = n;
-    /*
     int **matriz1 = NULL;
     int **matriz2 = NULL;
     int **matrizResultado = NULL;
-    */
-    //pthread_t *hilos = (pthread_t*) malloc(n*n*sizeof(pthread_t));
-    matrices->matriz1 = crear_matriz(matrices->matriz1, n);
-    matrices->matriz2 = crear_matriz(matrices->matriz2, n);
-    matrices->matrizResultado = crear_matriz(matrices->matrizResultado, n);
-    poblar_matriz(matrices->matriz1, n);
-    poblar_matriz(matrices->matriz2, n);
-    //mostrar_matriz(matrices->matriz1, n);
-    //mostrar_matriz(matrices->matriz2, n);
-    matrices->matrizResultado = multiplicar_matrices(matrices->matriz1,matrices->matriz2,matrices->matrizResultado,n);
-    //mostrar_matriz(matrices->matrizResultado,n);
+    estructura_matrices * matrices;
+    pthread_t *hilos = (pthread_t*) malloc(n*n*sizeof(pthread_t));  //Reserva de memoria para n*n hilos
+    
+    matriz1 = crear_matriz(matriz1, n);
+    matriz2 = crear_matriz(matriz2, n);
+    matrizResultado = crear_matriz(matrizResultado, n);
+
+    poblar_matriz(matriz1, n);
+    poblar_matriz(matriz2, n);
+
+    multiplicar_matrices(matrices,hilos,matriz1,matriz2,matrizResultado,n);
+
+    for(int i=0;i<(n*n);i++){
+        pthread_join(hilos[i],NULL);
+    }
+    
+    mostrar_matriz(matriz1, n);
+    mostrar_matriz(matriz2, n);
+    mostrar_matriz(matrizResultado,n);
+    
     free(matrices->matriz1);
     free(matrices->matriz2);
     free(matrices->matrizResultado);
     free(matrices);
-    //free(hilos);
+    free(hilos);
     return 0;
+
 }
 
 //Captura el tamaño de la matriz
@@ -101,39 +113,52 @@ void mostrar_matriz(int ** matriz, int n){
 }
 
 //Realiza el producto punto entre filas de la matriz 1 y columnas de la matriz 2
-int producto_punto(int * fila, int ** matriz2, int columna, int n){
-    int productoPunto = 0;
+void * producto_punto(void * matrices){
+    /*Debido a la solución adaptada los parámetros se empaquetan en una estructura de datos, de la cual
+    se envía su apuntador
+    */
+    estructura_matrices *datos = (estructura_matrices *) matrices;
+    int n = datos->n, fila = datos->fila, columna = datos->columna;
+    datos->matrizResultado[fila][columna] = 0;
     for(int i=0;i<n;i++){
         /*
             Realiza el producto punto de una fila con una columna
-            Recibe el apuntador a una fila, y la segunda matriz para acceder a la columna
-            Si se recibe la fila 1 y la columna 2:
-            *fila = p1, que a su vez apunta a {m11,m12,m13,...,m1n}
-
-            **matriz2, junto la columna 2, para acceder a la columna:
-            matriz2[i][2] = {b12,b22,b32,...,bn2}
+            Recibe el numero de fila y columna a multiplar, almacenados en la estructura que llega como parámetro
 
             El resto es la operacion aritmetica de producto punto bien concida
             producto Punto = m11*b12 + m12*b22 + m13*b32 +...+ m1n*bn2
         */
-        productoPunto = productoPunto + fila[i]*matriz2[i][columna];
+        datos->matrizResultado[fila][columna] += datos->matriz1[fila][i] * datos->matriz2[i][columna];
     }
-    return productoPunto;
+    return NULL;
 }
 
 //Realiza la multiplicacion de matrices, haciendo uso de la funcion producto_punto()
-int ** multiplicar_matrices(int ** matriz1, int ** matriz2, int ** matrizResultado, int n){
-    clock_t inicio = clock();
+void multiplicar_matrices(estructura_matrices * matrices, pthread_t * hilos, int ** matriz1, int ** matriz2, int ** matrizResultado, int n){
+    //clock_t inicio = clock();
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
+            /*Es necesario realizar este empaquetado de datos en nuevas estructuras por cada iteración,
+            de otro modo es posible que la información a la que accedan los hilos no sea la que se requiere en la 
+            lógica de la solución, es posible que un hilo accediera a un dato "futuro" y no al correspondiente
+            */
+            matrices = (estructura_matrices *) malloc(sizeof(estructura_matrices));
+            matrices->fila = i;
+            matrices->columna = j;
+            matrices->matriz1=matriz1;
+            matrices->matriz2=matriz2;
+            matrices->matrizResultado=matrizResultado;
+            matrices->n=n;
             /*Asigna a matrizResultado[i][j] 
             el producto punto entre la fila i de la matriz1 y la columna j de la matriz2
             */
-            matrizResultado[i][j] = producto_punto(matriz1[i],matriz2,j,n);
+            pthread_create(&(hilos[j + (i*(matrices->n))]),NULL,producto_punto,(void *) matrices);
         }
     }
+    /*
     clock_t fin = clock();
     float segundos = (float)(fin - inicio) / CLOCKS_PER_SEC;
     printf("La ejecucion ha tomado %.4f segundos\n", segundos);
-    return(matrizResultado);
+    */
+    return;
 }
