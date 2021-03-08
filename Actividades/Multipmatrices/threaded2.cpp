@@ -4,7 +4,6 @@
 #include <error.h>
 #include <pthread.h>
 
-#define nucleos 8
 /*estructura para almacenar los datos que serán utilizados en la multiplicación de matrices, aquí se
 empaquetan los parámetros que necesitamos en la operación
 */
