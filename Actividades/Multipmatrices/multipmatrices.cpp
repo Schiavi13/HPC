@@ -24,7 +24,11 @@ int main(){
     poblar_matriz(matriz2, n);
     //mostrar_matriz(matriz1, n);
     //mostrar_matriz(matriz2, n);
+    clock_t inicio = clock();
     matrizResultado = multiplicar_matrices(matriz1,matriz2,matrizResultado,n);
+    clock_t fin = clock();
+    float segundos = (float)(fin - inicio) / CLOCKS_PER_SEC;
+    printf("La ejecucion ha tomado %.4f segundos\n", segundos);
     //mostrar_matriz(matrizResultado,n);
     free(matriz1);
     free(matriz2);
@@ -108,7 +112,7 @@ int producto_punto(int * fila, int ** matriz2, int columna, int n){
 
 //Realiza la multiplicacion de matrices, haciendo uso de la funcion producto_punto()
 int ** multiplicar_matrices(int ** matriz1, int ** matriz2, int ** matrizResultado, int n){
-    clock_t inicio = clock();
+    
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
             /*Asigna a matrizResultado[i][j] 
@@ -117,8 +121,5 @@ int ** multiplicar_matrices(int ** matriz1, int ** matriz2, int ** matrizResulta
             matrizResultado[i][j] = producto_punto(matriz1[i],matriz2,j,n);
         }
     }
-    clock_t fin = clock();
-    float segundos = (float)(fin - inicio) / CLOCKS_PER_SEC;
-    printf("La ejecucion ha tomado %.4f segundos\n", segundos);
     return(matrizResultado);
 }
