@@ -10,7 +10,6 @@ empaquetan los parámetros que necesitamos en la operación
 typedef struct{
     int n = 0;
     int fila = 0;
-    //int columna = 0;
     int **matriz1 = NULL, **matriz2 = NULL, **matrizResultado = NULL;
 }estructura_matrices;
 
@@ -45,13 +44,7 @@ int main(){
         pthread_join(hilos[i],NULL);
     }
     clock_t fin = clock();
-    /*
-    for(int i=0;i<(n*n);i++){
-        pthread_join(hilos[i],NULL);
-    }
-    */
 
-    //clock_t fin = clock();
     float segundos = (float)(fin - inicio) / CLOCKS_PER_SEC;
     
     
@@ -158,7 +151,6 @@ void multiplicar_matrices(estructura_matrices * matrices, pthread_t * hilos, int
     for(int i=0;i<n;i++){
             matrices = (estructura_matrices *) malloc(sizeof(estructura_matrices));
             matrices->fila = i;
-            //matrices->columna = j;
             matrices->matriz1=matriz1;
             matrices->matriz2=matriz2;
             matrices->matrizResultado=matrizResultado;
