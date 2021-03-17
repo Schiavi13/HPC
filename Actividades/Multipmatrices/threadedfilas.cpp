@@ -53,9 +53,10 @@ int main(){
     mostrar_matriz(matriz2, n);
     mostrar_matriz(matrizResultado,n);
     */
-    printf("La ejecucion ha tomado %.4f segundos\n", segundos);
+    
     free(matrices);
     free(hilos);
+    printf("La ejecucion ha tomado %.4f segundos\n", segundos);
     return 0;
 
 }

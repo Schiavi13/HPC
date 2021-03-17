@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <time.h>
 
 //Funciones prototipo
@@ -28,7 +30,6 @@ int main(){
     matrizResultado = multiplicar_matrices(matriz1,matriz2,matrizResultado,n);
     clock_t fin = clock();
     float segundos = (float)(fin - inicio) / CLOCKS_PER_SEC;
-    
     mostrar_matriz(matrizResultado,n);
     free(matriz1);
     free(matriz2);
