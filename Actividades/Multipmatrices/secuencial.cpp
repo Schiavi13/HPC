@@ -22,14 +22,14 @@ int main(){
     matrizResultado = crear_matriz(matrizResultado, n);
     poblar_matriz(matriz1, n);
     poblar_matriz(matriz2, n);
-    mostrar_matriz(matriz1, n);
-    mostrar_matriz(matriz2, n);
+    //mostrar_matriz(matriz1, n);
+    //mostrar_matriz(matriz2, n);
     clock_t inicio = clock();
     matrizResultado = multiplicar_matrices(matriz1,matriz2,matrizResultado,n);
     clock_t fin = clock();
     float segundos = (float)(fin - inicio) / CLOCKS_PER_SEC;
     printf("La ejecucion ha tomado %.4f segundos\n", segundos);
-    mostrar_matriz(matrizResultado,n);
+    //mostrar_matriz(matrizResultado,n);
     free(matriz1);
     free(matriz2);
     free(matrizResultado);
