@@ -48,11 +48,11 @@ int main(){
     float segundos = (float)(fin - inicio) / CLOCKS_PER_SEC;
     
     
-    /*
+    
     mostrar_matriz(matriz1, n);
     mostrar_matriz(matriz2, n);
     mostrar_matriz(matrizResultado,n);
-    */
+    
     printf("La ejecucion ha tomado %.4f segundos\n", segundos);
     free(matrices);
     free(hilos);
