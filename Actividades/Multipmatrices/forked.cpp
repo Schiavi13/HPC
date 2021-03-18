@@ -5,15 +5,15 @@
 #include <unistd.h>
 #include <time.h>
 
-#define nucleos 4
+//#define nucleos 4
 
 //Funciones prototipo
 int capturar_tamano(void);
 int ** crear_matriz(int**, int);
 void poblar_matriz(int**, int);
 void mostrar_matriz(int**, int);
-int producto_punto(int*, int**, int**, int, int);
-int ** multiplicar_matrices(int**, int**, int**, pid_t*, int);
+void producto_punto(int**, int**, int**, int, int);
+void multiplicar_matrices(int**, int**,pid_t*, int**, int);
 
 
 int main(){
@@ -22,7 +22,7 @@ int main(){
     int **matriz1 = NULL;
     int **matriz2 = NULL;
     int **matrizResultado = NULL;
-    pid_t forks[nucleos];
+    pid_t *forks = (pid_t*) malloc(n*sizeof(pid_t));
     matriz1 = crear_matriz(matriz1, n);
     matriz2 = crear_matriz(matriz2, n);
     matrizResultado = crear_matriz(matrizResultado, n);
@@ -96,56 +96,36 @@ void mostrar_matriz(int ** matriz, int n){
 }
 
 //Realiza el producto punto entre filas de la matriz 1 y columnas de la matriz 2
-int producto_punto(int * fila, int ** matriz2, int ** matrizResultado, int columna, int n){
+void producto_punto(int **matriz1, int ** matriz2, int ** matrizResultado, int n, int fila){
     int productoPunto = 0;
     for(int i=0;i<n;i++){
-        /*Asigna a matrizResultado[i][j] 
-        el producto punto entre la fila i de la matriz1 y la columna j de la matriz2
-        */
+        matrizResultado[fila][i] = 0;
         for(int j=0;j<n;j++){
-        /*
-            Realiza el producto punto de una fila con una columna
-            Recibe el apuntador a una fila, y la segunda matriz para acceder a la columna
-            Si se recibe la fila 1 y la columna 2:
-            *fila = p1, que a su vez apunta a {m11,m12,m13,...,m1n}
-
-            **matriz2, junto la columna 2, para acceder a la columna:
-            matriz2[i][2] = {b12,b22,b32,...,bn2}
-
-            El resto es la operacion aritmetica de producto punto bien concida
-            producto Punto = m11*b12 + m12*b22 + m13*b32 +...+ m1n*bn2
-        */
-        productoPunto = productoPunto + fila[j]*matriz2[j][columna];
-    }
-    }
-        
-    return productoPunto;
+            matrizResultado[fila][i] += matrizResultado[fila][i] + matriz1[fila][j]*matriz2[i][j]; //suponiendo que matriz2 ya es la traspuesta de la matriz2
+                                                                                                    //original
+        }
+        printf("%d \n",matrizResultado[fila][i]);
+    }   
 }
 
 //Realiza la multiplicacion de matrices, haciendo uso de la funcion producto_punto()
-int ** multiplicar_matrices(int ** matriz1, int ** matriz2, int ** matrizResultado, int n){
-    int nuc = nucleos;
-    for(int i=0;i<nuc;++i){
+void multiplicar_matrices(int ** matriz1, int ** matriz2, pid_t* forks, int ** matrizResultado, int n){
+    for(int i=0;i<n;++i){
         if((forks[i]=fork()) < 0){
             perror("fork");
             abort();
         }
         else if(forks[i] == 0){
-            for(int j=0;j<n;j++){
-                
-            }
+            producto_punto(matriz1, matriz2, matrizResultado, n, i);
             exit(0);
         }
     }
 
     int status;
     pid_t pid;
-    while(nuc>0){
+    while(n>0){
         pid = wait(&status);
         printf("Hijo con PID %ld salio con estatus 0x%x. \n", (long)pid, status);
         --n;
     }
-
-    
-    return(matrizResultado);
 }
