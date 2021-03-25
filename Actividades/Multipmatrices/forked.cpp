@@ -17,7 +17,7 @@ void producto_punto(int**, int**, int**, int, int);
 void multiplicar_matrices(int**, int**,pid_t*, int**, int);
 
 
-int main(int argc, char *Argv[]){
+int main(int argc, char *argv[]){
     srand(time(NULL));
     int n = (int)atoi(argv[1]);
     int **matriz1 = NULL;
