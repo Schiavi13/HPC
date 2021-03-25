@@ -17,11 +17,17 @@ int main(){
     int **matriz1 = NULL;
     int **matriz2 = NULL;
     int **matrizResultado = NULL;
+    printf("Asig\n");
     matriz1 = crear_matriz(matriz1, n);
+    printf("m1\n");
     matriz2 = crear_matriz(matriz2, n);
+    printf("m2\n");
     matrizResultado = crear_matriz(matrizResultado, n);
+    printf("mr\n");
     poblar_matriz(matriz1, n);
+    printf("poblar\n");
     poblar_matriz(matriz2, n);
+    printf("poblar2\n");
     /*
     mostrar_matriz(matriz1, n);
     mostrar_matriz(matriz2, n);
@@ -108,7 +114,7 @@ int producto_punto(int * fila, int ** matriz2, int columna, int n){
             El resto es la operacion aritmetica de producto punto bien concida
             producto Punto = m11*b12 + m12*b22 + m13*b32 +...+ m1n*bn2
         */
-        productoPunto = productoPunto + fila[i]*matriz2[i][columna];
+        productoPunto = productoPunto + fila[i]*matriz2[columna][i];
     }
     return productoPunto;
 }
