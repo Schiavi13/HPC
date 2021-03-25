@@ -11,23 +11,18 @@ int producto_punto(int*,int**,int,int);
 int ** multiplicar_matrices(int**, int**, int**, int);
 
 
-int main(){
+int main(int argc, char *argv[]){
     srand(time(NULL));
-    int n = capturar_tamano();
-    int **matriz1 = NULL;
-    int **matriz2 = NULL;
-    int **matrizResultado = NULL;
-    printf("Asig\n");
+    int n = (int)atoi(argv[1]);
+    int **matriz1;
+    int **matriz2;
+    int **matrizResultado;
+    
     matriz1 = crear_matriz(matriz1, n);
-    printf("m1\n");
     matriz2 = crear_matriz(matriz2, n);
-    printf("m2\n");
     matrizResultado = crear_matriz(matrizResultado, n);
-    printf("mr\n");
     poblar_matriz(matriz1, n);
-    printf("poblar\n");
     poblar_matriz(matriz2, n);
-    printf("poblar2\n");
     /*
     mostrar_matriz(matriz1, n);
     mostrar_matriz(matriz2, n);
@@ -72,7 +67,7 @@ int ** crear_matriz(int **matriz, int n){
           pn -> {an1, an2, an3,..., ann}
 
     */
-    matriz = (int**) malloc(n * sizeof(int));
+    matriz = (int**) malloc(n * sizeof(int*));
     for(int i=0;i<n;i++){
         matriz[i] = (int *) malloc(n * sizeof(int));
     }
