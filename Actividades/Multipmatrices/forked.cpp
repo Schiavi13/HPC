@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <sys/mman.h>
 #include <time.h>
 
 //#define nucleos 4
@@ -16,9 +17,9 @@ void producto_punto(int**, int**, int**, int, int);
 void multiplicar_matrices(int**, int**,pid_t*, int**, int);
 
 
-int main(){
+int main(int argc, char *Argv[]){
     srand(time(NULL));
-    int n = capturar_tamano();
+    int n = (int)atoi(argv[1]);
     int **matriz1 = NULL;
     int **matriz2 = NULL;
     int **matrizResultado = NULL;
@@ -28,16 +29,20 @@ int main(){
     matrizResultado = crear_matriz(matrizResultado, n);
     poblar_matriz(matriz1, n);
     poblar_matriz(matriz2, n);
+    /*
     mostrar_matriz(matriz1, n);
     mostrar_matriz(matriz2, n);
+    */
     clock_t inicio = clock();
     multiplicar_matrices(matriz1,matriz2,forks,matrizResultado,n);
     clock_t fin = clock();
     float segundos = (float)(fin - inicio) / CLOCKS_PER_SEC;
-    mostrar_matriz(matrizResultado,n);
+    //mostrar_matriz(matrizResultado,n);
+    /*
     free(matriz1);
     free(matriz2);
     free(matrizResultado);
+    */
     printf("La ejecucion ha tomado %.4f segundos\n", segundos);
     return 0;
 }
@@ -57,23 +62,12 @@ int capturar_tamano(){
 
 //Reserva el espacio en memoria para la matriz
 int ** crear_matriz(int **matriz, int n){
-    /*Se crea un apuntador a apuntadores, estos apuntadores apuntaran a las 'columnas'
-    que seran espacios de memoria reservados para los datos de cada fila.
-
-    m = {p1, p2, p3,...,pn}
-    donde p1 -> {a11, a12, a13,..., a1n}
-          p2 -> {a21, a22, a23,..., a2n}
-          .
-          .
-          .
-          pn -> {an1, an2, an3,..., ann}
-
-    */
-    matriz = (int**) malloc(n * sizeof(int));
+    matriz = (int **) mmap(NULL,sizeof(int *)*n,PROT_READ | PROT_WRITE,MAP_SHARED | MAP_ANONYMOUS,1,0);
+    
     for(int i=0;i<n;i++){
-        matriz[i] = (int *) malloc(n * sizeof(int));
+        matriz[i] = (int*)mmap(NULL,sizeof(int *)*n,PROT_READ | PROT_WRITE,MAP_SHARED | MAP_ANONYMOUS,1,0);
     }
-    return(matriz);
+    return matriz;
 }
 
 //Llena la matriz con enteros positivos aleatorios
@@ -101,10 +95,10 @@ void producto_punto(int **matriz1, int ** matriz2, int ** matrizResultado, int n
     for(int i=0;i<n;i++){
         matrizResultado[fila][i] = 0;
         for(int j=0;j<n;j++){
-            matrizResultado[fila][i] += matrizResultado[fila][i] + matriz1[fila][j]*matriz2[i][j]; //suponiendo que matriz2 ya es la traspuesta de la matriz2
+            matrizResultado[fila][i] += matriz1[fila][j]*matriz2[i][j]; //suponiendo que matriz2 ya es la traspuesta de la matriz2
                                                                                                     //original
         }
-        printf("%d \n",matrizResultado[fila][i]);
+        //printf("%d \n",matrizResultado[fila][i]);
     }   
 }
 
@@ -125,7 +119,7 @@ void multiplicar_matrices(int ** matriz1, int ** matriz2, pid_t* forks, int ** m
     pid_t pid;
     while(n>0){
         pid = wait(&status);
-        printf("Hijo con PID %ld salio con estatus 0x%x. \n", (long)pid, status);
+        //printf("Hijo con PID %ld salio con estatus 0x%x. \n", (long)pid, status);
         --n;
     }
 }
