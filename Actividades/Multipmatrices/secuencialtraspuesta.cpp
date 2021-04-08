@@ -24,13 +24,17 @@ int main(int argc, char *argv[]){
     matrizResultado = crear_matriz(matrizResultado, n);
     poblar_matriz(matriz1, n);
     poblar_matriz(matriz2, n);
+    /*
     printf("Matriz 1:\n");
     mostrar_matriz(matriz1, n);
     printf("Matriz 2:\n");
     mostrar_matriz(matriz2, n);
+    */
     trasponer_matriz(matriz2, n);
+    /*
     printf("Matriz 2 traspuesta:\n");
     mostrar_matriz(matriz2, n);
+    */
     
     clock_t inicio = clock();
     matrizResultado = multiplicar_matrices(matriz1,matriz2,matrizResultado,n);
