@@ -41,7 +41,7 @@ int main(int argc, char *argv[]){
     clock_t fin = clock();
     float segundos = (float)(fin - inicio) / CLOCKS_PER_SEC;
     
-    mostrar_matriz(matrizResultado,n);
+    //mostrar_matriz(matrizResultado,n);
     free(matriz1);
     free(matriz2);
     free(matrizResultado);
