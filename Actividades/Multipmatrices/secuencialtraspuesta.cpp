@@ -3,7 +3,7 @@
 #include <time.h>
 
 //Funciones prototipo
-int capturar_tamano(void);
+//int capturar_tamano(void);
 int ** crear_matriz(int**, int);
 void poblar_matriz(int**, int);
 void trasponer_matriz(int**, int);
@@ -50,6 +50,7 @@ int main(int argc, char *argv[]){
 }
 
 //Captura el tamaño de la matriz
+/*
 int capturar_tamano(){
     int n = 0;
     printf("n: ");
@@ -61,6 +62,7 @@ int capturar_tamano(){
     }
     return n;
 }
+*/
 
 //Reserva el espacio en memoria para la matriz
 int ** crear_matriz(int **matriz, int n){
