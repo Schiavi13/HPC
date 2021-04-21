@@ -14,7 +14,7 @@ typedef struct{
 }estructura_matrices;
 
 //Funciones prototipo
-int capturar_tamano(void);
+//int capturar_tamano(void);
 int ** crear_matriz(int**, int);
 void poblar_matriz(int**, int);
 void mostrar_matriz(int**, int);
@@ -22,9 +22,9 @@ void *producto_punto(void * estructura_matrices);
 
 void multiplicar_matrices(estructura_matrices*,pthread_t*,int**,int**,int**,int);
 
-int main(){
+int main(int argc, char *argv[]){
     srand(time(NULL));
-    int n = capturar_tamano();
+    int n = (int)atoi(argv[1]);
     int **matriz1 = NULL;
     int **matriz2 = NULL;
     int **matrizResultado = NULL;
@@ -62,6 +62,7 @@ int main(){
 }
 
 //Captura el tamaño de la matriz
+/*
 int capturar_tamano(){
     int n = 0;
     printf("n: ");
@@ -73,6 +74,7 @@ int capturar_tamano(){
     }
     return n;
 }
+*/
 
 //Reserva el espacio en memoria para la matriz
 int ** crear_matriz(int **matriz, int n){
