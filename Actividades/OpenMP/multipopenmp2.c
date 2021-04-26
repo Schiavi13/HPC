@@ -3,7 +3,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <time.h>
-
+#include <omp.h>
 
 //Funciones prototipo
 //int capturar_tamano(void);
@@ -11,7 +11,7 @@ int ** crear_matriz(int**, int);
 void poblar_matriz(int**, int);
 void mostrar_matriz(int**, int);
 int producto_punto(int*,int**,int,int);
-int ** multiplicar_matrices(int**, int**, int**, int);
+int ** multiplicar_matrices(int**, int**, int**, int, int);
 
 
 int main(int argc, char *argv[]){
@@ -25,12 +25,14 @@ int main(int argc, char *argv[]){
     matrizResultado = crear_matriz(matrizResultado, n);
     poblar_matriz(matriz1, n);
     poblar_matriz(matriz2, n);
+    
     /*
     mostrar_matriz(matriz1, n);
     mostrar_matriz(matriz2, n);
     */
+
     clock_t inicio = clock();
-    matrizResultado = multiplicar_matrices(matriz1,matriz2,matrizResultado,n);
+    matrizResultado = multiplicar_matrices(matriz1,matriz2,matrizResultado,n,8);
     clock_t fin = clock();
     float segundos = (float)(fin - inicio) / CLOCKS_PER_SEC;
     //mostrar_matriz(matrizResultado,n);
@@ -114,16 +116,21 @@ int producto_punto(int * fila, int ** matriz2, int columna, int n){
 }
 
 //Realiza la multiplicacion de matrices, haciendo uso de la funcion producto_punto()
-int ** multiplicar_matrices(int ** matriz1, int ** matriz2, int ** matrizResultado, int n){
-    
-    for(int i=0;i<n;i++){
-        for(int j=0;j<n;j++){
+int ** multiplicar_matrices(int ** matriz1, int ** matriz2, int ** matrizResultado, int n, int nt){
+    int i,j, part;
+    part=n/nt;
+     
+    #pragma omp parallel for num_threads(nt) private(j) shared(matriz1, matriz2, matrizResultado) schedule(guided,part)
+    for(i=0;i<n;i++){
+        for(j=0;j<n;j++){
             /*Asigna a matrizResultado[i][j] 
             el producto punto entre la fila i de la matriz1 y la columna j de la matriz2
             */
+            //printf("Thread#: %d \n", omp_get_thread_num());
             matrizResultado[i][j] = producto_punto(matriz1[i],matriz2,j,n);
+            
         }
     }
-    
+    #pragma omp barrier
     return(matrizResultado);
 } 
