@@ -117,10 +117,9 @@ int producto_punto(int * fila, int ** matriz2, int columna, int n){
 
 //Realiza la multiplicacion de matrices, haciendo uso de la funcion producto_punto()
 int ** multiplicar_matrices(int ** matriz1, int ** matriz2, int ** matrizResultado, int n, int nt){
-    int i,j, part;
-    part=n/nt;
-     
-    #pragma omp parallel for num_threads(nt) private(j) shared(matriz1, matriz2, matrizResultado) schedule(guided,part)
+    int i,j;
+       
+    #pragma omp parallel for num_threads(nt) private(j) shared(matriz1, matriz2, matrizResultado) schedule(static)
     for(i=0;i<n;i++){
         for(j=0;j<n;j++){
             /*Asigna a matrizResultado[i][j] 
@@ -133,4 +132,4 @@ int ** multiplicar_matrices(int ** matriz1, int ** matriz2, int ** matrizResulta
     }
     #pragma omp barrier
     return(matrizResultado);
-} 
+}
