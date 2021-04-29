@@ -19,14 +19,17 @@ int main(){
     //Define la semilla usando el reloj del sistema
     srand(time(NULL));
 
-    
     //Calcula la probabilidad de que las agujas se crucen
+    clock_t inicio = clock();
     n_cruzados = monte_carlo();
     p = n_cruzados/(float) ITERACIONES;
     //Infiere Pi desde la probabilidad, sabiendo P = 2*longitud/Pi*Distancia
     pi = 2.0/(p*L);
+    clock_t fin = clock();
+    float segundos = (float)(fin - inicio) / CLOCKS_PER_SEC;
     printf("Probabilidad: %f\n",p);
     printf("Pi: %f\n", pi);
+    printf("La ejecucion ha tomado %.4f segundos\n", segundos);
     return 0;
 }
 
