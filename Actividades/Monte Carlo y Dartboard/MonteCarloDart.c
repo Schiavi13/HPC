@@ -3,21 +3,23 @@
 #include <time.h>
 #include <math.h>
 
-int monte_carlo();
-#define ITERACIONES 100000
+//Funciones prototipo
+int monte_carlo(int);
 
 
 
-int main(){
+
+int main(int argc, char *argv[]){
+    int iteraciones = (int)atoi(argv[1]);
     float pi;
     int i, p_circulo=0;
 
     //Define la semilla usando el reloj del sistema
     srand(time(NULL));
     clock_t inicio = clock();
-    p_circulo = monte_carlo();
+    p_circulo = monte_carlo(iteraciones);
     //Calcula el valor de Pi
-    pi = 4.0*p_circulo/(float) ITERACIONES;
+    pi = 4.0*p_circulo/(float) iteraciones;
     clock_t fin = clock();
     float segundos = (float)(fin - inicio) / CLOCKS_PER_SEC;
     printf("Pi: %f\n",pi);
@@ -25,11 +27,11 @@ int main(){
     return 0;
 }
 
-int monte_carlo(){
+int monte_carlo(int iteraciones){
     float x, y, d;
     int p_circulo=0;
 
-    for(int i=0; i<ITERACIONES; i++){
+    for(int i=0; i<iteraciones; i++){
         //Genera una coordenada (x,y)
         x = (float)rand()/(float)(RAND_MAX/2);
         x = x - 1;
