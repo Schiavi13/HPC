@@ -34,7 +34,7 @@ int main(){
 }
 
 int monte_carlo(){
-    float x, theta, n, p, pi;
+    float x, theta, n;
     int n_cruzados = 0;
     for(int i=0; i<ITERACIONES; i++){
         //Genera el estado (X, Theta)

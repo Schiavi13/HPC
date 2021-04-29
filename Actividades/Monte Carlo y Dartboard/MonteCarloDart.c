@@ -9,7 +9,7 @@ int monte_carlo();
 
 
 int main(){
-    float x, y, d, pi;
+    float pi;
     int i, p_circulo=0;
 
     //Define la semilla usando el reloj del sistema
@@ -26,7 +26,7 @@ int main(){
 }
 
 int monte_carlo(){
-    float x, y, d, pi;
+    float x, y, d;
     int p_circulo=0;
 
     for(int i=0; i<ITERACIONES; i++){
