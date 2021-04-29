@@ -14,11 +14,15 @@ int main(){
 
     //Define la semilla usando el reloj del sistema
     srand(time(NULL));
-    
+    clock_t inicio = clock();
     p_circulo = monte_carlo();
     //Calcula el valor de Pi
     pi = 4.0*p_circulo/(float) ITERACIONES;
+    clock_t fin = clock();
+    float segundos = (float)(fin - inicio) / CLOCKS_PER_SEC;
     printf("Pi: %f\n",pi);
+    printf("La ejecucion ha tomado %.4f segundos\n", segundos);
+    return 0;
 }
 
 int monte_carlo(){
