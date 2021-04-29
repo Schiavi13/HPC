@@ -3,8 +3,6 @@
 #include <time.h>
 #include <math.h>
 
-#include <error.h>
-#include <pthread.h>
 
 //Funciones prototipo
 int monte_carlo();
