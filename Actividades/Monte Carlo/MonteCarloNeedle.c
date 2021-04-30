@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
 
 int monte_carlo(double l, long long iteraciones){
     double x, theta, n;
-    int n_cruzados = 0;
+    long long n_cruzados = 0;
     for(long long i=0; i<iteraciones; i++){
         //Genera el estado (X, Theta)
         x = (double)rand()/(double)(RAND_MAX/l);
