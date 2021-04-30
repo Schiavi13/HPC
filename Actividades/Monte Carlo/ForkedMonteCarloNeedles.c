@@ -71,7 +71,6 @@ long long monte_carlo(pid_t * forks,double * sumas, double l, long long iteracio
 
 void needles(double*sumas, double l, long long iteraciones,long long iter_per_process,int proceso){
     double x, theta, n;
-    long long n_cruzados = 0;
     sumas[proceso] = 0;
     for(long long i=0; i<iter_per_process; i++){
         //Genera el estado (X, Theta)
