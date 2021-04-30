@@ -16,7 +16,7 @@ int main(int argc, char *argv[]){
     double l = atof(argv[1]);
     long long iteraciones = atoll(argv[2]); 
     double p, pi;
-    int n_cruzados;
+    long long n_cruzados;
     //Define la semilla usando el reloj del sistema
     srand(time(NULL));
 
