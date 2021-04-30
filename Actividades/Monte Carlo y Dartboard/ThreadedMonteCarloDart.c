@@ -5,28 +5,29 @@
 #include <error.h>
 #include <pthread.h>
 
-//Funciones prototipo
-int monte_carlo(long long);
+#define MAX_THREADS 8
 
 typedef struct{
     long long iteraciones;
-    long long p_circulo;
-    double x;
-    double y;
-    double d;
+    long long total_iteraciones;
+    int thread;
     double *sumas;
 }estructura_datos;
 
+//Funciones prototipo
+long long monte_carlo(estructura_datos*,pthread_t*,long long );
+void *darts(void*estructura_datos);
 
 int main(int argc, char *argv[]){
+    srand(time(NULL));
     long long iteraciones = atoll(argv[1]);
     double pi;
     long long p_circulo;
+    estructura_datos * datos;
+    pthread_t *hilos = (pthread_t*) malloc(MAX_THREADS*sizeof(pthread_t));
     
-    //Define la semilla usando el reloj del sistema
-    srand(time(NULL));
     clock_t inicio = clock();
-    p_circulo = monte_carlo(iteraciones);
+    p_circulo = monte_carlo(datos,hilos,iteraciones);
     //Calcula el valor de Pi
     pi = 4.0*p_circulo/(double) iteraciones;
     clock_t fin = clock();
@@ -36,10 +37,33 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-int monte_carlo(long long iteraciones){
-    double x, y, d;
-    long long p_circulo=0;
+long long monte_carlo(estructura_datos * datos,pthread_t * hilos, long long iteraciones){
+    double sumas[8] = {0};
+    double suma = 0;
+    for(int i=0;i<MAX_THREADS;i++){
+        datos = (estructura_datos *) malloc(sizeof(estructura_datos));
+        datos->iteraciones=iteraciones/MAX_THREADS;
+        datos->total_iteraciones = iteraciones;
+        datos->sumas = sumas;
+        datos->thread = i;
+        pthread_create(&(hilos[i]),NULL,darts,(void *) datos);
+    }
+    for(int i=0;i<MAX_THREADS;i++){
+        pthread_join(hilos[i],NULL);
+    }
 
+    for(int i=0;i<MAX_THREADS;i++){
+        suma = suma + sumas[i];
+    }
+    return suma;
+}
+
+void * darts(void * estructura){
+    estructura_datos *datos = (estructura_datos *) estructura;
+    long long n_cruzados = 0;
+    double x, y, d;
+    long long iteraciones = datos->iteraciones;
+    datos -> sumas[pthread_self()-1] = 0;
     for(long long i=0; i<iteraciones; i++){
         //Genera una coordenada (x,y)
         x = (double)rand()/(double)(RAND_MAX/2);
@@ -49,9 +73,23 @@ int monte_carlo(long long iteraciones){
         //Calcula si el dardo cae en el circulo
         d = (x*x) + (y*y);
         if(d<=1){
-            p_circulo++;
+            datos->sumas[datos->thread] = datos->sumas[datos->thread] + 1;
         }
         
     }
-    return p_circulo;
+    if(datos->thread==0){
+        double resto = datos->total_iteraciones%MAX_THREADS;
+
+        for(int i=0;i<resto;i++){
+            x = (double)rand()/(double)(RAND_MAX/2);
+            x = x - 1;
+            y = (double)rand()/(double)(RAND_MAX/2);
+            y = y - 1;
+            //Calcula si el dardo cae en el circulo
+            d = (x*x) + (y*y);
+            if(d<=1){
+                datos->sumas[datos->thread] = datos->sumas[datos->thread] + 1;
+            }
+        }
+    }
 }
