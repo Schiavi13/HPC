@@ -124,6 +124,7 @@ void * producto_punto(void * matrices){
     
     estructura_matrices *datos = (estructura_matrices *) matrices;
     int n = datos->n, fila = datos->fila;
+    
     for(int j=0;j<n;j++){
             /*Es necesario realizar este empaquetado de datos en nuevas estructuras por cada iteración,
             de otro modo es posible que la información a la que accedan los hilos no sea la que se requiere en la 
