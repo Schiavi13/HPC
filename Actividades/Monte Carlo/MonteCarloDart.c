@@ -19,7 +19,7 @@ int main(int argc, char *argv[]){
     clock_t inicio = clock();
     p_circulo = monte_carlo(iteraciones);
     //Calcula el valor de Pi
-    pi = 4.0*p_circulo/(float) iteraciones;
+    pi = 4.0*p_circulo/(double) iteraciones;
     clock_t fin = clock();
     float segundos = (float)(fin - inicio) / CLOCKS_PER_SEC;
     printf("Pi: %f\n",pi);
