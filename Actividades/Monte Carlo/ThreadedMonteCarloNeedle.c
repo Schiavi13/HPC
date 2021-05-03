@@ -22,7 +22,7 @@ typedef struct{
 }estructura_datos;
 
 //Funciones prototipo
-long long monte_carlo(estructura_datos*,pthread_t*,double,long long );
+long long monte_carlo(double *,estructura_datos*,pthread_t*,double,long long );
 void *needles(void*estructura_datos);
 
 int main(int argc, char *argv[]){
@@ -31,13 +31,15 @@ int main(int argc, char *argv[]){
     long long iteraciones = atoll(argv[2]); 
     double p, pi;
     long long n_cruzados;
+    double *sumas = NULL;
+    sumas = (double *)malloc(MAX_THREADS*sizeof(double));
     estructura_datos * datos;
     pthread_t *hilos = (pthread_t*) malloc(MAX_THREADS*sizeof(pthread_t));
     
 
     //Calcula la probabilidad de que las agujas se crucen
     clock_t inicio = clock();
-    n_cruzados = monte_carlo(datos,hilos,l,iteraciones);
+    n_cruzados = monte_carlo(sumas,datos,hilos,l,iteraciones);
     //printf("cruce: %lld",n_cruzados);
     p = n_cruzados/(double) iteraciones;
     //Infiere Pi desde la probabilidad, sabiendo P = 2*longitud/Pi*Distancia
@@ -50,8 +52,8 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-long long monte_carlo(estructura_datos * datos,pthread_t * hilos, double l, long long iteraciones){
-    double sumas[8] = {0};
+long long monte_carlo(double * sumas,estructura_datos * datos,pthread_t * hilos, double l, long long iteraciones){
+    
     double suma = 0;
     for(int i=0;i<MAX_THREADS;i++){
         datos = (estructura_datos *) malloc(sizeof(estructura_datos));
