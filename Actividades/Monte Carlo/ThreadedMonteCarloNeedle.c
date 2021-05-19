@@ -13,16 +13,17 @@
 #endif
 #define MAX_THREADS 8
 
+pthread_mutex_t mutex;
+long long suma = 0;
 typedef struct{
     long long iteraciones;
     long long total_iteraciones;
     double l;
     int thread;
-    double *sumas;
 }estructura_datos;
 
 //Funciones prototipo
-long long monte_carlo(double *,estructura_datos*,pthread_t*,double,long long );
+void monte_carlo(estructura_datos*,pthread_t*,double,long long );
 void *needles(void*estructura_datos);
 
 int main(int argc, char *argv[]){
@@ -30,18 +31,15 @@ int main(int argc, char *argv[]){
     double l = atof(argv[1]);
     long long iteraciones = atoll(argv[2]); 
     double p, pi;
-    long long n_cruzados;
-    double *sumas = NULL;
-    sumas = (double *)malloc(MAX_THREADS*sizeof(double));
-    estructura_datos * datos;
+    estructura_datos * datos = NULL;
     pthread_t *hilos = (pthread_t*) malloc(MAX_THREADS*sizeof(pthread_t));
     
 
     //Calcula la probabilidad de que las agujas se crucen
     clock_t inicio = clock();
-    n_cruzados = monte_carlo(sumas,datos,hilos,l,iteraciones);
+    monte_carlo(datos,hilos,l,iteraciones);
     //printf("cruce: %lld",n_cruzados);
-    p = n_cruzados/(double) iteraciones;
+    p = suma/(double) iteraciones;
     //Infiere Pi desde la probabilidad, sabiendo P = 2*longitud/Pi*Distancia
     pi = 2.0/(p*l);
     clock_t fin = clock();
@@ -52,44 +50,43 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-long long monte_carlo(double * sumas,estructura_datos * datos,pthread_t * hilos, double l, long long iteraciones){
+void monte_carlo(estructura_datos * datos,pthread_t * hilos, double l, long long iteraciones){
     
-    double suma = 0;
+
+    pthread_mutex_init(&mutex,NULL);
     for(int i=0;i<MAX_THREADS;i++){
         datos = (estructura_datos *) malloc(sizeof(estructura_datos));
         datos->iteraciones=iteraciones/MAX_THREADS;
         datos->total_iteraciones = iteraciones;
         datos->l=l;
-        datos->sumas = sumas;
         datos->thread = i;
+        
         pthread_create(&(hilos[i]),NULL,needles,(void *) datos);
     }
     for(int i=0;i<MAX_THREADS;i++){
         pthread_join(hilos[i],NULL);
     }
-
-    for(int i=0;i<MAX_THREADS;i++){
-        suma = suma + sumas[i];
-    }
-    return suma;
+    pthread_mutex_destroy(&mutex);
+    
 }
 
 void * needles(void * estructura){
     estructura_datos *datos = (estructura_datos *) estructura;
-    long long n_cruzados = 0;
     double x, theta, n;
     long long iteraciones = datos->iteraciones;
     double l = datos->l;
-    datos -> sumas[pthread_self()-1] = 0;
     for(long long i=0; i<iteraciones; i++){
         //Genera el estado (X, Theta)
+        
         x = (double)rand()/(double)(RAND_MAX/l);
         theta = (double)rand()/(double)(RAND_MAX/M_PI);
 
         //Calcula si la aguja cruza
         n = sin(theta)/2.0;
         if(x+n >= l || x-n<= 0){
-            datos->sumas[datos->thread] = datos->sumas[datos->thread] + 1;
+            pthread_mutex_lock(&mutex);
+            suma = suma+1;
+            pthread_mutex_unlock(&mutex);
         }
     }
     if(datos->thread==0){
@@ -102,9 +99,13 @@ void * needles(void * estructura){
             //Calcula si la aguja cruza
             n = sin(theta)/2.0;
             if(x+n >= l || x-n<= 0){
-                datos->sumas[datos->thread] = datos->sumas[datos->thread] + 1;
+                pthread_mutex_lock(&mutex);
+                suma = suma++;
+                pthread_mutex_unlock(&mutex);
             }
         }
     }
+    
+    return NULL;
 
 }
