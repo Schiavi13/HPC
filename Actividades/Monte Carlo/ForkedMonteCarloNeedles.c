@@ -7,6 +7,8 @@
 #include <time.h>
 #include <math.h>
 
+
+
 long long monte_carlo(pid_t*,double*, double, long long );
 void needles(double*, double, long long, long long, int);
 
@@ -36,6 +38,7 @@ int main(int argc, char *argv[]){
     pi = 2.0/(p*l);
     clock_t fin = clock();
     float segundos = (float)(fin - inicio) / CLOCKS_PER_SEC;
+    
     printf("Probabilidad: %f\n",p);
     printf("Pi: %f\n", pi);
     printf("La ejecucion ha tomado %.4f segundos\n", segundos);
@@ -45,6 +48,7 @@ int main(int argc, char *argv[]){
 long long monte_carlo(pid_t * forks,double * sumas, double l, long long iteraciones){
     long long suma=0;
     long long iter_per_process = iteraciones/MAX_PROCESS;
+    int status = 0;
     for(int i=0;i<MAX_PROCESS;i++){
         if((forks[i]=fork()) < 0){
             perror("fork");
@@ -55,14 +59,11 @@ long long monte_carlo(pid_t * forks,double * sumas, double l, long long iteracio
             exit(0);
         }
     }
-    int status;
-    int n = MAX_PROCESS;
-    pid_t pid;
-    while(n>0){
-        pid = wait(&status);
-        //printf("Hijo con PID %ld salio con estatus 0x%x. \n", (long)pid, status);
-        --n;
+    
+    for(int i=0; i<MAX_PROCESS; i++){
+        wait(NULL);
     }
+    
     for(int i=0;i<MAX_PROCESS;i++){
         suma = suma + sumas[i];
     }
@@ -96,4 +97,5 @@ void needles(double*sumas, double l, long long iteraciones,long long iter_per_pr
             }
         }
     }
+    
 }

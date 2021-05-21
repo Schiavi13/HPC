@@ -36,6 +36,7 @@ int main(int argc, char *argv[]){
 long long monte_carlo(pid_t * forks,double * sumas, long long iteraciones){
     long long suma=0;
     long long iter_per_process = iteraciones/MAX_PROCESS;
+    int status = 0;
     for(int i=0;i<MAX_PROCESS;i++){
         if((forks[i]=fork()) < 0){
             perror("fork");
@@ -47,13 +48,8 @@ long long monte_carlo(pid_t * forks,double * sumas, long long iteraciones){
         }
     }
 
-    int status;
-    int n = MAX_PROCESS;
-    pid_t pid;
-    while(n>0){
-        pid = wait(&status);
-        //printf("Hijo con PID %ld salio con estatus 0x%x. \n", (long)pid, status);
-        --n;
+    for(int i=0; i<MAX_PROCESS; i++){
+        wait(NULL);
     }
     for(int i=0;i<MAX_PROCESS;i++){
         suma = suma + sumas[i];
